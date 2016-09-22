@@ -1,5 +1,35 @@
+<html><!DOCTYPE html>
 <html>
-Hello friendly internet user,
+<head>
+<style>
+  * {
+    padding: 0;
+    margin: 0;
+  }
+  .fit { /* set relative picture size */
+    max-width: 100%;
+    max-height: 100%;
+  }
+  .center {
+    display: block;
+    margin: auto;
+  }
+</style>
+</head>
+<body>
 
-My name is Julio.
+<img class="center fit" src="https://upload.wikimedia.org/wikipedia/en/5/5f/Original_Doge_meme.jpg" >    
+
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script type="text/javascript" language="JavaScript">
+  function set_body_height() { // set body height = window height
+    $('body').height($(window).height());
+  }
+  $(document).ready(function() {
+    $(window).bind('resize', set_body_height);
+    set_body_height();
+  });
+</script>
+
+</body>
 </html>
