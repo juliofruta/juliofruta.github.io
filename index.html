@@ -8,6 +8,8 @@
   <meta property="og:title" content="Julio — design iPhone apps by talking">
   <meta property="og:description" content="Describe your app. Julio designs it, writes the code, and opens a pull request in your repo.">
   <meta name="theme-color" content="#0b0b12">
+  <link rel="canonical" href="https://juliofruta.com/">
+  <script>if (location.hostname.endsWith('github.io')) location.replace('https://juliofruta.com' + location.pathname + location.search + location.hash);</script>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍉</text></svg>">
   <style>
     :root {
@@ -92,7 +94,7 @@
   <div class="wrap">
     <nav>
       <a class="logo" href="/">🍉 <span>Julio</span></a>
-      <div class="links"><a href="#features">Features</a><a href="#how">How it works</a><a href="/resume.html">About me</a></div>
+      <div class="links"><a href="#features">Features</a><a href="#how">How it works</a><a href="/resume">About me</a></div>
     </nav>
 
     <header class="hero">
@@ -152,7 +154,7 @@
 
     <footer>
       <span>© <span id="y"></span> Julio Fruta</span>
-      <span><a href="https://github.com/juliofruta">GitHub</a></span>
+      <span><a href="https://portfolio.juliofruta.com">Portfolio</a> · <a href="https://github.com/juliofruta">GitHub</a></span>
     </footer>
   </div>
 
@@ -162,10 +164,11 @@
     document.getElementById('y').textContent = new Date().getFullYear();
 
     // Work out which environment we're in from the hostname.
-    // prod: juliofruta.pages.dev, juliofruta.github.io (or a custom domain)
-    // dev: dev.juliofruta.pages.dev; PR: pr-<n>.juliofruta.pages.dev
+    // prod: juliofruta.com, www.juliofruta.com, juliofruta.pages.dev
+    // dev: dev.juliofruta.com, dev.juliofruta.pages.dev; PR: pr-<n>.juliofruta.pages.dev
     const host = location.hostname;
-    const sub = host.endsWith('.juliofruta.pages.dev') ? host.split('.')[0] : null;
+    const sub = host === 'dev.juliofruta.com' ? 'dev'
+              : host.endsWith('.juliofruta.pages.dev') ? host.split('.')[0] : null;
     const env = host === 'localhost' || host === '127.0.0.1' ? 'local'
               : sub === 'dev' ? 'dev'
               : sub && sub.startsWith('pr-') ? sub
@@ -176,8 +179,7 @@
       b.style.display = 'block';
     }
 
-    // GitHub Pages is static-only, so from there we post to the prod API on Cloudflare.
-    const API = host.endsWith('github.io') ? 'https://juliofruta.pages.dev/api/subscribe' : '/api/subscribe';
+    const API = '/api/subscribe';
 
     document.querySelectorAll('form.signup').forEach(form => {
       const msg = form.nextElementSibling;

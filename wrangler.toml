@@ -1,6 +1,6 @@
-# Cloudflare Pages project: https://juliofruta.pages.dev
-#   prod -> master branch      https://juliofruta.pages.dev
-#   dev  -> dev branch         https://dev.juliofruta.pages.dev
+# Cloudflare Pages project "juliofruta"
+#   prod -> master branch      https://juliofruta.com
+#   dev  -> dev branch         https://dev.juliofruta.com
 #   PR   -> pull request #N    https://pr-N.juliofruta.pages.dev
 name = "juliofruta"
 pages_build_output_dir = "dist"

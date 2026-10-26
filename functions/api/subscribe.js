@@ -1,6 +1,6 @@
 // POST /api/subscribe  { email }  -> saves the email in D1 (binding: DB)
 const ALLOWED_ORIGINS = [
-  /^https:\/\/juliofruta\.github\.io$/,
+  /^https:\/\/((www|dev)\.)?juliofruta\.com$/,
   /^https:\/\/([a-z0-9-]+\.)?juliofruta\.pages\.dev$/,
   /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/,
 ];

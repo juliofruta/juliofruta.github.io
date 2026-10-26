@@ -1,7 +1,7 @@
 name: Deploy
 
-# prod -> push to master  -> https://juliofruta.pages.dev
-# dev  -> push to dev     -> https://dev.juliofruta.pages.dev
+# prod -> push to master  -> https://juliofruta.com
+# dev  -> push to dev     -> https://dev.juliofruta.com
 # PR   -> pull request #N -> https://pr-N.juliofruta.pages.dev
 on:
   push:
@@ -34,10 +34,10 @@ jobs:
             echo "url=https://pr-${{ github.event.pull_request.number }}.juliofruta.pages.dev" >> "$GITHUB_OUTPUT"
           elif [ "${{ github.ref_name }}" = "master" ]; then
             echo "branch=master" >> "$GITHUB_OUTPUT"
-            echo "url=https://juliofruta.pages.dev" >> "$GITHUB_OUTPUT"
+            echo "url=https://juliofruta.com" >> "$GITHUB_OUTPUT"
           else
             echo "branch=dev" >> "$GITHUB_OUTPUT"
-            echo "url=https://dev.juliofruta.pages.dev" >> "$GITHUB_OUTPUT"
+            echo "url=https://dev.juliofruta.com" >> "$GITHUB_OUTPUT"
           fi
 
       - uses: actions/setup-node@v4
