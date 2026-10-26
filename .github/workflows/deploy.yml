@@ -1,0 +1,74 @@
+name: Deploy
+
+# prod -> push to master  -> https://juliofruta.pages.dev
+# dev  -> push to dev     -> https://dev.juliofruta.pages.dev
+# PR   -> pull request #N -> https://pr-N.juliofruta.pages.dev
+on:
+  push:
+    branches: [master, dev]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.event.pull_request.number || github.ref_name }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  deployments: write
+  pull-requests: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # Fork PRs don't get secrets, so skip them.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pick environment
+        id: env
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "branch=pr-${{ github.event.pull_request.number }}" >> "$GITHUB_OUTPUT"
+            echo "url=https://pr-${{ github.event.pull_request.number }}.juliofruta.pages.dev" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.ref_name }}" = "master" ]; then
+            echo "branch=master" >> "$GITHUB_OUTPUT"
+            echo "url=https://juliofruta.pages.dev" >> "$GITHUB_OUTPUT"
+          else
+            echo "branch=dev" >> "$GITHUB_OUTPUT"
+            echo "url=https://dev.juliofruta.pages.dev" >> "$GITHUB_OUTPUT"
+          fi
+
+      - run: ./scripts/build.sh
+
+      - name: Apply D1 migrations
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: 26b7e8edd0b7a154aa8f57ba3e8ba483
+          command: d1 migrations apply ${{ steps.env.outputs.branch == 'master' && 'juliofruta-emails-prod' || 'juliofruta-emails-dev' }} --remote ${{ steps.env.outputs.branch == 'master' && '--env production' || '' }}
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: 26b7e8edd0b7a154aa8f57ba3e8ba483
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          command: pages deploy --project-name=juliofruta --branch=${{ steps.env.outputs.branch }} --commit-dirty=true
+
+      - name: Comment preview URL on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const url = '${{ steps.env.outputs.url }}';
+            const marker = '<!-- juliofruta-preview -->';
+            const body = `${marker}\n🍉 **PR environment deployed:** ${url}\n\nCommit: ${context.payload.pull_request.head.sha.slice(0, 7)}. Signups here go to the **dev** database.`;
+            const { data: comments } = await github.rest.issues.listComments({ ...context.repo, issue_number: context.issue.number });
+            const existing = comments.find(c => c.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({ ...context.repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ ...context.repo, issue_number: context.issue.number, body });
+            }

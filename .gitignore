@@ -4,3 +4,6 @@
 /.swiftpm
 /*.xcodeproj
 .publish
+dist/
+.wrangler/
+node_modules/

@@ -1,0 +1,26 @@
+# Cloudflare Pages project: https://juliofruta.pages.dev
+#   prod -> master branch      https://juliofruta.pages.dev
+#   dev  -> dev branch         https://dev.juliofruta.pages.dev
+#   PR   -> pull request #N    https://pr-N.juliofruta.pages.dev
+name = "juliofruta"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-10-01"
+
+# Default (local + preview: dev and PRs) uses the dev database.
+[vars]
+ENVIRONMENT = "dev"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "juliofruta-emails-dev"
+database_id = "89c79d4c-2c86-438b-a920-d5f65041ac0e"
+migrations_dir = "migrations"
+
+[env.production.vars]
+ENVIRONMENT = "prod"
+
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "juliofruta-emails-prod"
+database_id = "f28ae157-2bd5-429b-b5ba-7acfeb870376"
+migrations_dir = "migrations"

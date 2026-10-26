@@ -1,0 +1,13 @@
+{
+  "name": "juliofruta-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "./scripts/build.sh",
+    "dev": "./scripts/build.sh && wrangler d1 migrations apply juliofruta-emails-dev --local && wrangler pages dev",
+    "emails": "./scripts/emails.sh"
+  },
+  "devDependencies": {
+    "wrangler": "^4.153.0"
+  }
+}
