@@ -40,6 +40,13 @@ jobs:
             echo "url=https://dev.juliofruta.pages.dev" >> "$GITHUB_OUTPUT"
           fi
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
       - run: ./scripts/build.sh
 
       - name: Apply D1 migrations
